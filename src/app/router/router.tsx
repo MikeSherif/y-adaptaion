@@ -88,6 +88,7 @@ export const router = createRouter({
   routeTree,
   context: { queryClient: undefined! },
   defaultPreload: 'intent',
+  basepath: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
 });
 declare module '@tanstack/react-router' {
   interface Register {

@@ -1,9 +1,23 @@
+import { copyFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+function githubPagesSpa() {
+  return {
+    name: 'github-pages-spa',
+    closeBundle() {
+      const dist = resolve('dist');
+      copyFileSync(resolve(dist, 'index.html'), resolve(dist, '404.html'));
+      writeFileSync(resolve(dist, '.nojekyll'), '');
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react()],
+  base: process.env.BASE_PATH || '/',
+  plugins: [react(), githubPagesSpa()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
