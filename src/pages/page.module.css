@@ -1,0 +1,248 @@
+.page {
+  display: grid;
+  gap: 24px;
+}
+.pageHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+.eyebrow {
+  margin-bottom: 5px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pageHeader h1 {
+  font-size: clamp(25px, 3vw, 31px);
+  letter-spacing: -0.7px;
+}
+.pageHeader p {
+  margin-top: 7px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(290px, 0.8fr);
+  gap: 18px;
+}
+.dashboardGrid > * {
+  min-width: 0;
+}
+.twoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: 20px;
+  align-items: start;
+}
+.panel {
+  padding: 22px;
+}
+.panel h2 {
+  font-size: 18px;
+}
+.filters {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) repeat(3, minmax(130px, 0.35fr));
+  gap: 10px;
+  padding: 14px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+.taskGrid {
+  display: grid;
+  gap: 10px;
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.breadcrumbs a {
+  color: var(--color-primary);
+}
+.detailHero {
+  padding: 25px;
+}
+.detailHero h1 {
+  margin-top: 10px;
+  font-size: 27px;
+  letter-spacing: -0.6px;
+}
+.detailHero p {
+  max-width: 750px;
+  margin-top: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.sideCard {
+  padding: 20px;
+}
+.sideCard h3 {
+  font-size: 15px;
+}
+.keyValue {
+  display: grid;
+  gap: 11px;
+  margin-top: 16px;
+}
+.keyValue div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.keyValue strong {
+  color: var(--color-text);
+  font-size: 13px;
+  text-align: right;
+}
+.stageTasks {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.materialGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+.profile {
+  display: grid;
+  grid-template-columns: 225px minmax(0, 1fr);
+  gap: 20px;
+}
+.profileAside {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.profileAside h2 {
+  margin-top: 5px;
+  font-size: 18px;
+}
+.profileAside p {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.stageLead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 18px;
+}
+.stageLead > div {
+  min-width: min(390px, 55%);
+}
+.notificationPage {
+  max-width: 880px;
+}
+.noticeGroup {
+  margin-top: 12px;
+}
+.noticeGroup h2 {
+  margin: 20px 0 9px;
+  font-size: 14px;
+}
+.notFound {
+  min-height: 60vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 13px;
+  text-align: center;
+}
+.notFound h1 {
+  font-size: 58px;
+  color: var(--color-primary);
+}
+.notFound p {
+  color: var(--color-text-secondary);
+}
+@media (max-width: 1050px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+  .grid,
+  .materialGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .page {
+    gap: 18px;
+  }
+  .pageHeader {
+    display: block;
+  }
+  .pageHeader > :last-child {
+    margin-top: 14px;
+  }
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .filters > :first-child {
+    grid-column: 1 / -1;
+  }
+  .grid,
+  .materialGrid {
+    grid-template-columns: 1fr;
+  }
+  .profile {
+    grid-template-columns: 1fr;
+  }
+  .profileAside {
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    text-align: left;
+  }
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  .detailHero {
+    padding: 20px;
+  }
+  .stageLead {
+    display: grid;
+  }
+  .stageLead > div {
+    width: 100%;
+  }
+  .panel {
+    padding: 16px;
+  }
+}

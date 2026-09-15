@@ -1,0 +1,28 @@
+.section {
+  padding: 20px;
+}
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.heading h2 {
+  font-size: 17px;
+}
+.heading p {
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+.heading a {
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.list {
+  display: grid;
+  gap: 9px;
+  margin-top: 18px;
+}

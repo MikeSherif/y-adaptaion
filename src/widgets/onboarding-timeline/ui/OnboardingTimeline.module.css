@@ -1,0 +1,131 @@
+.timeline {
+  display: grid;
+}
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 43px minmax(0, 1fr);
+  gap: 14px;
+  padding-bottom: 20px;
+}
+.row:not(:last-child)::before {
+  position: absolute;
+  top: 39px;
+  left: 18px;
+  width: 2px;
+  height: calc(100% - 17px);
+  background: #e4e8f0;
+  content: '';
+}
+.stepComplete,
+.stepCurrent,
+.stepLocked {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 37px;
+  height: 37px;
+  place-items: center;
+  color: #73809b;
+  background: #eef1f6;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+}
+.stepComplete {
+  color: #fff;
+  background: var(--color-success);
+}
+.stepCurrent {
+  color: #fff;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 5px #ebedff;
+}
+.content,
+.current {
+  padding: 17px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  border-radius: var(--radius-md);
+}
+.current {
+  border-color: #cbd1fa;
+  background: #fafaff;
+  box-shadow: 0 6px 17px rgba(76, 95, 222, 0.08);
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.top span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+.top h3 {
+  margin-top: 3px;
+  font-size: 16px;
+}
+.top a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.content p,
+.current p {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 15px;
+}
+.footer > div {
+  width: min(290px, 50%);
+}
+.footer small {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+.footer time {
+  color: #748098;
+  font-size: 12px;
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .row {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 9px;
+  }
+  .stepComplete,
+  .stepCurrent,
+  .stepLocked {
+    width: 30px;
+    height: 30px;
+  }
+  .row:not(:last-child)::before {
+    top: 32px;
+    left: 14px;
+  }
+  .footer {
+    display: grid;
+    gap: 10px;
+  }
+  .footer > div {
+    width: 100%;
+  }
+  .footer time {
+    white-space: normal;
+  }
+}

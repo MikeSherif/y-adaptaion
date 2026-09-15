@@ -1,0 +1,82 @@
+.section {
+  padding: 20px;
+}
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.heading h2 {
+  font-size: 17px;
+}
+.heading p {
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+.heading a {
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+.list {
+  display: grid;
+  gap: 4px;
+  margin-top: 15px;
+}
+.item,
+.unread {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 6px;
+  border-radius: 10px;
+}
+.unread {
+  background: #f7f8ff;
+}
+.item:hover,
+.unread:hover {
+  background: #f3f5fb;
+}
+.noticeIcon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  color: #596add;
+  background: #ecefff;
+  border-radius: 9px;
+}
+.copy {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 3px;
+}
+.copy strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.copy small {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item > svg {
+  color: #a6afc0;
+}
+.unread i {
+  width: 7px;
+  height: 7px;
+  background: #596add;
+  border-radius: 999px;
+}
+.chevron {
+  color: #afb7c6 !important;
+}

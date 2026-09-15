@@ -1,0 +1,117 @@
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(120deg, #4b5dd6, #7383e5);
+  border: 0;
+  box-shadow: 0 14px 32px rgba(68, 84, 192, 0.22);
+}
+.main {
+  padding: 28px 30px;
+}
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #dfe3ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.main h1 {
+  margin-top: 11px;
+  font-size: clamp(25px, 3vw, 33px);
+  letter-spacing: -0.8px;
+}
+.main > p {
+  max-width: 530px;
+  margin-top: 8px;
+  color: #e4e7ff;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.progressRow {
+  display: grid;
+  grid-template-columns: auto minmax(100px, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  max-width: 520px;
+  margin-top: 25px;
+}
+.progressRow strong {
+  display: block;
+  font-size: 19px;
+}
+.progressRow span {
+  color: #dde2ff;
+  font-size: 11px;
+}
+.progressRow small {
+  color: #e2e5ff;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.progressRow :global([role='progressbar']) {
+  background: rgba(255, 255, 255, 0.22);
+}
+.progressRow :global([role='progressbar']) > div {
+  background: #fff;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 22px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 750;
+}
+.stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 26px;
+  color: #424fae;
+  background: #e7eaff;
+}
+.stage > svg:first-child {
+  margin-bottom: auto;
+  color: #6574dc;
+}
+.stage span {
+  margin-top: 18px;
+  color: #6c76bb;
+  font-size: 12px;
+}
+.stage strong {
+  margin-top: 4px;
+  color: #303d9b;
+  font-size: 15px;
+  line-height: 1.3;
+}
+.stage small {
+  margin-top: 7px;
+  color: #737db9;
+  font-size: 12px;
+}
+.stage > svg:last-child {
+  margin-top: auto;
+  color: #5a6adc;
+}
+@media (max-width: 650px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .main {
+    padding: 24px 20px;
+  }
+  .stage {
+    display: none;
+  }
+  .progressRow {
+    grid-template-columns: auto 1fr;
+  }
+  .progressRow small {
+    grid-column: 2;
+  }
+}

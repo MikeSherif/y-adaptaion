@@ -1,0 +1,98 @@
+.sidebar {
+  position: fixed;
+  z-index: 20;
+  display: flex;
+  width: 244px;
+  height: 100dvh;
+  flex-direction: column;
+  padding: 20px 12px;
+  background: #fff;
+  border-right: 1px solid var(--color-border);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  color: #202b50;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.brand span {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(135deg, #4b5ddd, #7588ef);
+  border-radius: 9px;
+}
+.nav {
+  display: grid;
+  gap: 5px;
+  margin-top: 38px;
+}
+.item,
+.active {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 43px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: #69748c;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.16s;
+}
+.item:hover {
+  color: var(--color-primary);
+  background: #f5f6ff;
+}
+.active {
+  color: #4658d5;
+  background: #eff1ff;
+}
+.bottom {
+  display: grid;
+  gap: 4px;
+  margin-top: auto;
+}
+.bottom button {
+  justify-content: flex-start;
+  padding: 0 12px;
+}
+.backdrop,
+.backdropOpen {
+  display: none;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    left: -270px;
+    box-shadow: var(--shadow-md);
+    transition: left 0.22s ease;
+  }
+  .sidebarOpen {
+    position: fixed;
+    z-index: 20;
+    left: 0;
+    display: flex;
+    width: 244px;
+    height: 100dvh;
+    flex-direction: column;
+    padding: 20px 12px;
+    background: #fff;
+    border-right: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    transition: left 0.22s ease;
+  }
+  .backdropOpen {
+    position: fixed;
+    z-index: 19;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(22, 30, 49, 0.38);
+  }
+}
