@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
@@ -33,6 +34,25 @@ export interface DatePickerProps {
   'aria-label'?: string;
 }
 
+const gap = 6;
+const margin = 8;
+
+function placePopover(trigger: HTMLElement, popover: HTMLElement) {
+  const rect = trigger.getBoundingClientRect();
+  const width = popover.offsetWidth;
+  const height = popover.offsetHeight;
+  const spaceBelow = window.innerHeight - rect.bottom - margin;
+  const spaceAbove = rect.top - margin;
+  const above = height + gap > spaceBelow && spaceAbove > spaceBelow;
+  const maxLeft = Math.max(margin, window.innerWidth - width - margin);
+  const left = Math.min(Math.max(rect.left, margin), maxLeft);
+  const preferred = above ? rect.top - height - gap : rect.bottom + gap;
+  const top = Math.max(margin, Math.min(preferred, window.innerHeight - height - margin));
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+  popover.style.visibility = 'visible';
+}
+
 function shiftDateByMonth(isoDate: string, months: number): string {
   const target = shiftMonth(isoDate, months);
   const day = Number(isoDate.slice(8, 10));
@@ -60,13 +80,27 @@ export function DatePicker({
   const dialogId = `${pickerId}-calendar`;
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [focused, setFocused] = useState(() => value || todayIso());
   const [viewMonth, setViewMonth] = useState(() => monthOf(value || todayIso()));
   const today = todayIso();
   const close = useCallback(() => setOpen(false), []);
-  useDismiss(rootRef, open, close);
+  useDismiss(rootRef, open, close, popoverRef);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    let frame = 0;
+    const update = () => {
+      const trigger = triggerRef.current;
+      const popover = popoverRef.current;
+      if (trigger && popover) placePopover(trigger, popover);
+      frame = requestAnimationFrame(update);
+    };
+    update();
+    return () => cancelAnimationFrame(frame);
+  }, [open]);
 
   const isDisabled = (date: string) => Boolean((min && date < min) || (max && date > max));
 
@@ -144,8 +178,9 @@ export function DatePicker({
         </span>
         <CalendarDays size={16} className={styles.icon} aria-hidden="true" />
       </button>
-      {open && (
-        <div className={styles.popover} id={dialogId} role="dialog" aria-label="Выбор даты">
+      {open &&
+        createPortal(
+          <div ref={popoverRef} className={styles.popover} id={dialogId} role="dialog" aria-label="Выбор даты">
           <div className={styles.head}>
             <button
               type="button"
@@ -206,8 +241,9 @@ export function DatePicker({
               Сегодня
             </button>
           </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
       {error && <span className={selectStyles.error}>{error}</span>}
     </div>
   );
