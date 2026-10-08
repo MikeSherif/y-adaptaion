@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useTasksQuery } from '@/entities/task';
 import { TaskCard } from '@/entities/task';
-import { Card, ErrorState, Skeleton } from '@/shared/ui';
+import { Card, EmptyState, ErrorState, Skeleton } from '@/shared/ui';
 import styles from './UpcomingTasks.module.css';
 export function UpcomingTasks() {
   const { data, isLoading, isError, refetch } = useTasksQuery({ sort: 'dueDate' });
@@ -21,8 +21,11 @@ export function UpcomingTasks() {
           <Skeleton height={105} />
         </div>
       )}
-      {isError && <ErrorState onRetry={() => void refetch()} />}{' '}
-      {upcoming && (
+      {isError && <ErrorState onRetry={() => void refetch()} />}
+      {upcoming && upcoming.length === 0 && (
+        <EmptyState title="Ближайших задач нет" description="Все текущие задачи уже выполнены." />
+      )}
+      {upcoming && upcoming.length > 0 && (
         <div className={styles.list}>
           {upcoming.map((task) => (
             <TaskCard task={task} compact key={task.id} />

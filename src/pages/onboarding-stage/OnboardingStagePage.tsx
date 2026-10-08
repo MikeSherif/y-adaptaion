@@ -1,18 +1,22 @@
 import { ArrowLeft, CalendarDays, UserRound } from 'lucide-react';
-import { Link, useParams } from '@tanstack/react-router';
+import { Link, Navigate, useParams } from '@tanstack/react-router';
 import { useStageQuery } from '@/entities/onboarding-stage';
 import { TaskCard } from '@/entities/task';
-import { useMaterialsQuery } from '@/entities/material';
-import { MaterialCard } from '@/entities/material';
+import { MaterialCard, useMaterialsByIds } from '@/entities/material';
+import { useUserQuery } from '@/entities/user';
+import { CompleteTaskButton } from '@/features/complete-task';
 import { useMarkMaterialAsRead } from '@/features/mark-material-as-read';
 import { Card, ErrorState, Progress, Skeleton } from '@/shared/ui';
 import { formatDate } from '@/shared/lib/date';
+import { formatUserName, getSupportContact } from '@/shared/lib/user';
 import styles from '@/pages/page.module.css';
 export function OnboardingStagePage() {
   const { stageId } = useParams({ from: '/onboarding/$stageId' });
   const { data: stage, isLoading, isError, refetch } = useStageQuery(stageId);
-  const { data: materials } = useMaterialsQuery();
+  const { data: user } = useUserQuery();
+  const { data: materials } = useMaterialsByIds(stage?.tasks.flatMap((task) => task.materialIds ?? []));
   const markRead = useMarkMaterialAsRead();
+  const support = getSupportContact(user);
   if (isLoading)
     return (
       <div className={styles.page}>
@@ -23,10 +27,8 @@ export function OnboardingStagePage() {
     );
   if (isError || !stage)
     return <ErrorState title="Не удалось открыть этап" onRetry={() => void refetch()} />;
-  const related =
-    materials
-      ?.filter((material) => stage.tasks.some((task) => task.materialIds?.includes(material.id)))
-      .slice(0, 3) ?? [];
+  if (stage.status === 'locked') return <Navigate to="/onboarding" />;
+  const related = materials?.slice(0, 3) ?? [];
   return (
     <div className={styles.page}>
       <div className={styles.breadcrumbs}>
@@ -55,7 +57,17 @@ export function OnboardingStagePage() {
           <h2>Задачи этапа</h2>
           <div className={styles.stageTasks}>
             {stage.tasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard
+                key={task.id}
+                task={task}
+                actions={
+                  <CompleteTaskButton
+                    taskId={task.id}
+                    completed={task.status === 'completed'}
+                    compact
+                  />
+                }
+              />
             ))}
           </div>
         </Card>
@@ -74,13 +86,15 @@ export function OnboardingStagePage() {
                 <span>Задач</span>
                 <strong>{stage.tasks.length}</strong>
               </div>
-              <div>
-                <span>Ответственный</span>
-                <strong>
-                  <UserRound size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                  Мария Соколова
-                </strong>
-              </div>
+              {support && (
+                <div>
+                  <span>{support.role}</span>
+                  <strong>
+                    <UserRound size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                    {formatUserName(support.person)}
+                  </strong>
+                </div>
+              )}
             </div>
           </Card>
           {related.length > 0 && (

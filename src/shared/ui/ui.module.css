@@ -65,7 +65,6 @@
   color: #3c465d;
 }
 .input,
-.select,
 .textarea {
   width: 100%;
   min-height: 42px;
@@ -79,12 +78,12 @@
     box-shadow 0.18s;
 }
 .textarea {
+  font-weight: 400;
   min-height: 96px;
   padding: 10px 12px;
   resize: vertical;
 }
 .input:focus,
-.select:focus,
 .textarea:focus {
   outline: none;
   border-color: var(--color-primary);

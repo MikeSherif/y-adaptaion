@@ -26,8 +26,12 @@ export function DashboardOverview() {
           <Sparkles size={15} />
           Ваш путь в команде
         </span>
-        <h1>Рады видеть, {user?.firstName ?? 'Алина'}!</h1>
-        <p>Вы уверенно проходите адаптацию. Следующий шаг — глубже познакомиться с продуктом.</p>
+        <h1>{user ? `Рады видеть, ${user.firstName}!` : 'Рады видеть!'}</h1>
+        <p>
+          {current
+            ? `Вы уверенно проходите адаптацию. Следующий шаг — ${current.title}.`
+            : 'Вы уверенно проходите адаптацию. Все этапы пройдены.'}
+        </p>
         <div className={styles.progressRow}>
           <div>
             <strong>{onboarding.progress}%</strong>

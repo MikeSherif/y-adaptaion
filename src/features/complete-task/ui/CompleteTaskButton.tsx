@@ -5,10 +5,12 @@ export function CompleteTaskButton({
   taskId,
   completed,
   onDone,
+  compact = false,
 }: {
   taskId: string;
   completed: boolean;
   onDone?: () => void;
+  compact?: boolean;
 }) {
   const mutation = useCompleteTask();
   const complete = async () => {
@@ -16,13 +18,23 @@ export function CompleteTaskButton({
     onDone?.();
   };
   return (
-    <Button onClick={() => void complete()} loading={mutation.isPending} disabled={completed}>
+    <Button
+      type="button"
+      variant={compact ? 'secondary' : 'primary'}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void complete();
+      }}
+      loading={mutation.isPending}
+      disabled={completed}
+    >
       {completed ? (
         'Задача выполнена'
       ) : (
         <>
           <Check size={17} />
-          Завершить задачу
+          {compact ? 'Завершить' : 'Завершить задачу'}
         </>
       )}
     </Button>

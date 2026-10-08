@@ -16,6 +16,11 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+.pageHeader > a,
+.pageHeader > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 .pageHeader h1 {
   font-size: clamp(25px, 3vw, 31px);
   letter-spacing: -0.7px;
@@ -45,11 +50,111 @@
 .panel h2 {
   font-size: 18px;
 }
+.panelLead {
+  margin: 6px 0 16px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.catalogList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.catalogRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+.catalogIcon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: 12px;
+}
+.catalogCopy {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.catalogCopy h3 {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.catalogCopy p {
+  margin-top: 3px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0;
+}
+.notice {
+  padding: 12px 14px;
+  color: #3c465d;
+  background: var(--color-primary-soft);
+  border-radius: 12px;
+  font-size: 13px;
+}
+.formPage {
+  display: grid;
+  gap: 20px;
+  max-width: 920px;
+}
+.formStack {
+  display: grid;
+  gap: 15px;
+}
+.fieldLabel {
+  display: grid;
+  gap: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+.inlineActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.fieldHint {
+  margin-top: -8px;
+  color: var(--color-warning, #b7791f);
+  font-size: 12px;
+  font-weight: 600;
+}
+.formError {
+  color: var(--color-danger);
+  font-size: 13px;
+}
 .filters {
   display: grid;
   grid-template-columns: minmax(190px, 1fr) repeat(3, minmax(130px, 0.35fr));
   gap: 10px;
   padding: 14px;
+  overflow: visible;
 }
 .grid {
   display: grid;
@@ -118,6 +223,14 @@
   gap: 10px;
   margin-top: 18px;
 }
+.taskPlanActions {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.taskPlanActions > :last-child {
+  justify-self: end;
+}
 .materialGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -168,6 +281,112 @@
 .notificationPage {
   max-width: 880px;
 }
+.employeeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.employeeLink {
+  display: grid;
+  gap: 10px;
+  color: inherit;
+  min-width: 0;
+}
+.employeeCard {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  height: 100%;
+}
+.employeeTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.employeeTitle {
+  min-width: 0;
+}
+.employeeTop h2 {
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.employeeTop p {
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.employeeTop span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.employeeDept {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.employeeMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.employeeMeta span {
+  text-align: right;
+}
+.employeeBadge {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  color: #b42318;
+  background: #fde8e6;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.employeeBadgeInfo {
+  composes: employeeBadge;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-soft);
+}
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.employeeActions {
+  display: flex;
+  justify-content: flex-end;
+}
+.employeeHero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+}
+.employeeHeroActions {
+  margin-left: auto;
+}
+.employeeHero h1 {
+  margin-top: 4px;
+  font-size: 27px;
+  letter-spacing: -0.6px;
+}
+.employeeHero p {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
 .noticeGroup {
   margin-top: 12px;
 }
@@ -194,7 +413,9 @@
   .dashboardGrid {
     grid-template-columns: 1fr;
   }
-  .twoCol {
+  .twoCol,
+  .employeeGrid,
+  .templateGrid {
     grid-template-columns: 1fr;
   }
   .grid,
@@ -219,7 +440,8 @@
     grid-column: 1 / -1;
   }
   .grid,
-  .materialGrid {
+  .materialGrid,
+  .employeeGrid {
     grid-template-columns: 1fr;
   }
   .profile {
@@ -235,6 +457,13 @@
   }
   .detailHero {
     padding: 20px;
+  }
+  .employeeHero {
+    flex-wrap: wrap;
+  }
+  .employeeHeroActions {
+    margin-left: 0;
+    width: 100%;
   }
   .stageLead {
     display: grid;

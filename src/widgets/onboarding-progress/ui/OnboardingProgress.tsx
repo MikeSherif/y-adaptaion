@@ -1,10 +1,17 @@
 import { Award, CalendarDays } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 import { useOnboardingQuery } from '@/entities/onboarding';
 import { Card, ErrorState, Progress, Skeleton } from '@/shared/ui';
 import { formatDate } from '@/shared/lib/date';
 import styles from './OnboardingProgress.module.css';
-export function OnboardingProgress() {
-  const { data, isLoading, isError, refetch } = useOnboardingQuery();
+export function OnboardingProgress({
+  userId,
+  showPlanLink = true,
+}: {
+  userId?: string;
+  showPlanLink?: boolean;
+}) {
+  const { data, isLoading, isError, refetch } = useOnboardingQuery(userId);
   if (isLoading)
     return (
       <Card className={styles.card}>
@@ -25,10 +32,15 @@ export function OnboardingProgress() {
       <div className={styles.title}>
         <div>
           <span>Адаптация</span>
-          <h2>Ваш прогресс</h2>
+          <h2>{userId ? 'Прогресс адаптации' : 'Ваш прогресс'}</h2>
         </div>
         <Award size={22} />
       </div>
+      {showPlanLink && (
+        <Link to="/onboarding" className={styles.link}>
+          Открыть план
+        </Link>
+      )}
       <div className={styles.number}>
         {data.progress}
         <small>%</small>

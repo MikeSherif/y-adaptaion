@@ -1,17 +1,23 @@
 import type { Onboarding } from '@/shared/types/domain';
+import { findUser } from './users';
 import { getStages } from './stages';
-export function getMockOnboarding(): Onboarding {
-  const stages = getStages();
+import { findPlan, planEndDate } from './plan';
+
+export function getMockOnboarding(userId: string): Onboarding {
+  const user = findUser(userId);
+  const stages = getStages(userId);
   const allTasks = stages.flatMap((stage) => stage.tasks);
-  const progress = Math.round(
-    (allTasks.filter((task) => task.status === 'completed').length / allTasks.length) * 100,
-  );
+  const progress = allTasks.length
+    ? Math.round(
+        (allTasks.filter((task) => task.status === 'completed').length / allTasks.length) * 100,
+      )
+    : 0;
   return {
-    id: 'onboarding-1',
-    userId: 'user-1',
-    status: 'in_progress',
-    startDate: '2026-09-08',
-    endDate: '2026-10-09',
+    id: `onboarding-${userId}`,
+    userId,
+    status: progress === 100 ? 'completed' : allTasks.length === 0 ? 'not_started' : 'in_progress',
+    startDate: user?.startDate ?? '',
+    endDate: user ? planEndDate(user, findPlan(user)) : undefined,
     progress,
     stages,
   };

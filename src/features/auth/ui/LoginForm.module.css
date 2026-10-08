@@ -11,6 +11,25 @@
   color: var(--color-danger);
   font-size: 13px;
 }
+.demos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.demo {
+  padding: 8px 10px;
+  color: #4b5ddd;
+  background: #eef1ff;
+  border: 0;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.demo:hover {
+  background: #e3e8ff;
+}
 .hint {
   display: grid;
   gap: 5px;

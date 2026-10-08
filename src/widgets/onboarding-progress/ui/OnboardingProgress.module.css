@@ -17,6 +17,13 @@
 .title svg {
   color: #6879e4;
 }
+.link {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
 .number {
   margin: 20px 0 12px;
   font-size: 31px;

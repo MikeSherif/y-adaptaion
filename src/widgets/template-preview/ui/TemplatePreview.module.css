@@ -1,0 +1,92 @@
+.preview {
+  display: grid;
+  gap: 14px;
+}
+.summary {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.stages {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stage {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+.stageHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.stageHead h3 {
+  font-size: 15px;
+}
+.stageHead small {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+.order {
+  display: grid;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+.stageDesc {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.tasks {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.task {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 10px;
+  row-gap: 4px;
+  padding: 6px 0;
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+}
+.task:first-child {
+  border-top: 0;
+}
+.day {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.title {
+  min-width: 0;
+}
+.meta {
+  display: flex;
+  grid-column: 2;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}

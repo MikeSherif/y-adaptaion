@@ -4,7 +4,13 @@ import type { OnboardingStage } from '@/shared/types/domain';
 import { Progress } from '@/shared/ui';
 import { formatShortDate } from '@/shared/lib/date';
 import styles from './OnboardingTimeline.module.css';
-export function OnboardingTimeline({ stages }: { stages: OnboardingStage[] }) {
+export function OnboardingTimeline({
+  stages,
+  interactive = true,
+}: {
+  stages: OnboardingStage[];
+  interactive?: boolean;
+}) {
   return (
     <ol className={styles.timeline}>
       {stages.map((stage) => (
@@ -32,7 +38,7 @@ export function OnboardingTimeline({ stages }: { stages: OnboardingStage[] }) {
                 <span>Этап {stage.order}</span>
                 <h3>{stage.title}</h3>
               </div>
-              {stage.status !== 'locked' && (
+              {interactive && stage.status !== 'locked' && (
                 <Link to="/onboarding/$stageId" params={{ stageId: stage.id }}>
                   Открыть <MoveRight size={15} />
                 </Link>

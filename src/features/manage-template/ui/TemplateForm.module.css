@@ -1,0 +1,148 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: 20px;
+  align-items: start;
+}
+.preview {
+  position: sticky;
+  top: 92px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+}
+.stageList {
+  display: grid;
+  gap: 16px;
+}
+.stage {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+.stageHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.stageHead h3 {
+  flex: 1;
+  font-size: 15px;
+}
+.order {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  background: var(--color-primary);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+}
+.stageActions {
+  display: flex;
+  gap: 2px;
+}
+.stageActions button {
+  min-width: 36px;
+  padding: 0 10px;
+}
+.stageGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px 110px;
+  gap: 12px;
+  align-items: start;
+}
+.taskList {
+  display: grid;
+  gap: 10px;
+}
+.task {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: #f7f8fc;
+  border-radius: 12px;
+}
+.taskHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+}
+.taskHead button {
+  min-height: 32px;
+  padding: 0 10px;
+}
+.taskNumber {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.taskGrid {
+  display: grid;
+  grid-template-columns: 110px repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.fieldLabel {
+  display: grid;
+  gap: 7px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+.compactText {
+  min-height: 64px;
+}
+.materialsToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 6px 10px;
+  color: var(--color-primary);
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.materialsToggle svg:last-child {
+  transition: transform 0.18s ease;
+}
+.chevronOpen {
+  transform: rotate(180deg);
+}
+.addStage {
+  margin-top: 16px;
+}
+.error {
+  color: var(--color-danger);
+  font-size: 13px;
+}
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .preview {
+    position: static;
+    max-height: none;
+  }
+}
+@media (max-width: 640px) {
+  .stageGrid,
+  .taskGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stageGrid > :first-child,
+  .taskGrid > :last-child {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,9 +1,18 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import type { MaterialType } from '@/shared/types/domain';
-import { useMaterialsQuery, MaterialCard } from '@/entities/material';
+import {
+  materialCategoryOptions,
+  materialTypeOptions,
+  MaterialCard,
+  useMaterialsQuery,
+} from '@/entities/material';
 import { useMarkMaterialAsRead } from '@/features/mark-material-as-read';
 import { Card, EmptyState, ErrorState, Input, Select, Skeleton } from '@/shared/ui';
 import styles from '@/pages/page.module.css';
+
+const typeFilterOptions = [{ value: '', label: 'Все типы' }, ...materialTypeOptions];
+const categoryFilterOptions = [{ value: '', label: 'Все категории' }, ...materialCategoryOptions];
+
 export function MaterialsPage() {
   const search = useSearch({ from: '/materials' });
   const navigate = useNavigate({ from: '/materials' });
@@ -31,28 +40,15 @@ export function MaterialsPage() {
         <Select
           aria-label="Тип материала"
           value={search.type ?? ''}
-          onChange={(event) =>
-            setSearch({ type: (event.target.value || undefined) as MaterialType | undefined })
-          }
-        >
-          <option value="">Все типы</option>
-          <option value="document">Документы</option>
-          <option value="video">Видео</option>
-          <option value="link">Ссылки</option>
-          <option value="presentation">Презентации</option>
-        </Select>
+          options={typeFilterOptions}
+          onChange={(type) => setSearch({ type: (type || undefined) as MaterialType | undefined })}
+        />
         <Select
           aria-label="Категория"
           value={search.category ?? ''}
-          onChange={(event) => setSearch({ category: event.target.value || undefined })}
-        >
-          <option value="">Все категории</option>
-          <option value="О компании">О компании</option>
-          <option value="Обязательное">Обязательное</option>
-          <option value="Команда">Команда</option>
-          <option value="Инструменты">Инструменты</option>
-          <option value="Процессы">Процессы</option>
-        </Select>
+          options={categoryFilterOptions}
+          onChange={(category) => setSearch({ category: category || undefined })}
+        />
       </Card>
       {isLoading && (
         <div className={styles.materialGrid}>

@@ -1,5 +1,6 @@
 import type { Task } from '@/shared/types/domain';
 import { TaskCard } from '@/entities/task';
+import { CompleteTaskButton } from '@/features/complete-task';
 import { Card, EmptyState, ErrorState, Skeleton } from '@/shared/ui';
 import styles from '@/pages/page.module.css';
 
@@ -31,7 +32,13 @@ export function TaskList({ tasks, isLoading, isError, onRetry }: TaskListProps) 
   return (
     <div className={styles.taskGrid}>
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+        <TaskCard
+          key={task.id}
+          task={task}
+          actions={
+            <CompleteTaskButton taskId={task.id} completed={task.status === 'completed'} compact />
+          }
+        />
       ))}
     </div>
   );

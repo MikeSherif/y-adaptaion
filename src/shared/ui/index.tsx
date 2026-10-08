@@ -2,14 +2,17 @@ import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
   ReactNode,
-  SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
 import clsx from 'clsx';
-import { AlertCircle, Inbox, LoaderCircle } from 'lucide-react';
+import { AlertCircle, Archive, ArchiveRestore, Inbox, LoaderCircle } from 'lucide-react';
 import styles from './ui.module.css';
+export { Select } from './Select';
+export type { SelectOption, SelectProps } from './Select';
+export { DatePicker } from './DatePicker';
+export type { DatePickerProps } from './DatePicker';
+import { buttonClass, type ButtonVariant } from './buttonClass';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   loading?: boolean;
@@ -24,13 +27,29 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={clsx(styles.button, styles[variant], className)}
+      className={buttonClass(variant, className)}
       disabled={disabled || loading}
       {...props}
     >
       {loading && <LoaderCircle size={16} className="spin" aria-hidden="true" />}
       {children}
     </button>
+  );
+}
+export function ArchiveToggleButton({
+  archived,
+  loading,
+  onToggle,
+}: {
+  archived?: boolean;
+  loading?: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <Button type="button" variant={archived ? 'secondary' : 'ghost'} loading={loading} onClick={onToggle}>
+      {!loading && (archived ? <ArchiveRestore size={16} /> : <Archive size={16} />)}
+      {archived ? 'Вернуть' : 'В архив'}
+    </Button>
   );
 }
 export function IconButton({
@@ -64,25 +83,6 @@ export function Input({ label, error, className, id, ...props }: FieldProps) {
         {...props}
       />
       {error && <span className={styles.errorText}>{error}</span>}
-    </div>
-  );
-}
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string;
-  children: ReactNode;
-}
-export function Select({ label, className, id, children, ...props }: SelectProps) {
-  const selectId = id ?? props.name;
-  return (
-    <div className={styles.inputWrap}>
-      {label && (
-        <label className={styles.label} htmlFor={selectId}>
-          {label}
-        </label>
-      )}
-      <select id={selectId} className={clsx(styles.select, className)} {...props}>
-        {children}
-      </select>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { CheckCircle2, Sparkles } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
-import { LoginForm } from '@/features/auth';
+import { LoginForm, useAuthStore } from '@/features/auth';
 import styles from './LoginPage.module.css';
 export function LoginPage() {
   const navigate = useNavigate();
@@ -39,7 +39,12 @@ export function LoginPage() {
           <p className={styles.welcome}>С возвращением</p>
           <h2>Войдите в аккаунт</h2>
           <p className={styles.sub}>Используйте рабочие данные для продолжения.</p>
-          <LoginForm onSuccess={() => void navigate({ to: '/' })} />
+          <LoginForm
+            onSuccess={() => {
+              const role = useAuthStore.getState().session?.role;
+              void navigate({ to: role === 'admin' ? '/admin/employees' : '/' });
+            }}
+          />
         </div>
       </section>
     </main>

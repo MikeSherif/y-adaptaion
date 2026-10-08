@@ -10,6 +10,24 @@ interface TaskFiltersProps {
   filters: TaskFiltersState;
   onChange: (value: Partial<TaskFiltersState>) => void;
 }
+const statusOptions = [
+  { value: '', label: 'Все статусы' },
+  { value: 'todo', label: 'К выполнению' },
+  { value: 'in_progress', label: 'В работе' },
+  { value: 'completed', label: 'Готово' },
+  { value: 'overdue', label: 'Просрочено' },
+] as const;
+const priorityOptions = [
+  { value: '', label: 'Все приоритеты' },
+  { value: 'high', label: 'Высокий' },
+  { value: 'medium', label: 'Средний' },
+  { value: 'low', label: 'Низкий' },
+] as const;
+const sortOptions = [
+  { value: 'dueDate', label: 'По сроку' },
+  { value: 'priority', label: 'По приоритету' },
+] as const;
+
 export function TaskFilters({ filters, onChange }: TaskFiltersProps) {
   return (
     <Card className={styles.filters}>
@@ -22,36 +40,23 @@ export function TaskFilters({ filters, onChange }: TaskFiltersProps) {
       <Select
         aria-label="Статус"
         value={filters.status ?? ''}
-        onChange={(event) =>
-          onChange({ status: (event.target.value || undefined) as TaskStatus | undefined })
-        }
-      >
-        <option value="">Все статусы</option>
-        <option value="todo">К выполнению</option>
-        <option value="in_progress">В работе</option>
-        <option value="completed">Готово</option>
-        <option value="overdue">Просрочено</option>
-      </Select>
+        options={[...statusOptions]}
+        onChange={(status) => onChange({ status: (status || undefined) as TaskStatus | undefined })}
+      />
       <Select
         aria-label="Приоритет"
         value={filters.priority ?? ''}
-        onChange={(event) =>
-          onChange({ priority: (event.target.value || undefined) as TaskPriority | undefined })
+        options={[...priorityOptions]}
+        onChange={(priority) =>
+          onChange({ priority: (priority || undefined) as TaskPriority | undefined })
         }
-      >
-        <option value="">Все приоритеты</option>
-        <option value="high">Высокий</option>
-        <option value="medium">Средний</option>
-        <option value="low">Низкий</option>
-      </Select>
+      />
       <Select
         aria-label="Сортировка"
         value={filters.sort ?? 'dueDate'}
-        onChange={(event) => onChange({ sort: event.target.value as 'dueDate' | 'priority' })}
-      >
-        <option value="dueDate">По сроку</option>
-        <option value="priority">По приоритету</option>
-      </Select>
+        options={[...sortOptions]}
+        onChange={(sort) => onChange({ sort })}
+      />
     </Card>
   );
 }

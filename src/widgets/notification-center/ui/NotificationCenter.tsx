@@ -2,7 +2,7 @@ import { Bell, CheckCheck, ChevronRight } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useNotificationsQuery } from '@/entities/notification';
 import { useMarkNotificationAsRead } from '@/features/mark-notification-as-read';
-import { Card, ErrorState, Skeleton } from '@/shared/ui';
+import { Card, EmptyState, ErrorState, Skeleton } from '@/shared/ui';
 import styles from './NotificationCenter.module.css';
 export function NotificationCenter({ compact = true }: { compact?: boolean }) {
   const { data, isLoading, isError, refetch } = useNotificationsQuery();
@@ -24,8 +24,14 @@ export function NotificationCenter({ compact = true }: { compact?: boolean }) {
           <Skeleton height={58} />
         </div>
       )}
-      {isError && <ErrorState onRetry={() => void refetch()} />}{' '}
-      {items && (
+      {isError && <ErrorState onRetry={() => void refetch()} />}
+      {items && items.length === 0 && (
+        <EmptyState
+          title="Уведомлений нет"
+          description="Когда появятся новости по адаптации, они отобразятся здесь."
+        />
+      )}
+      {items && items.length > 0 && (
         <div className={styles.list}>
           {items.map((notification) => (
             <Link

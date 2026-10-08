@@ -1,0 +1,1 @@
+export { AdminDirectoriesPage } from './AdminDirectoriesPage';

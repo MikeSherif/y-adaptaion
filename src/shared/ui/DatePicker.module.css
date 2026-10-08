@@ -1,0 +1,130 @@
+.icon {
+  flex: 0 0 auto;
+  color: #8b94a8;
+}
+.popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 40;
+  width: 296px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.month {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+.nav {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: #3c465d;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.nav:hover {
+  background: #f3f5fb;
+}
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.weekdays span {
+  padding: 4px 0;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--color-text-secondary);
+  text-align: center;
+  text-transform: uppercase;
+}
+.day {
+  position: relative;
+  height: 36px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 550;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.day:hover:not(:disabled) {
+  background: #f3f5fb;
+}
+.day:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+.outside {
+  color: #b4bccc;
+}
+.today {
+  color: var(--color-primary);
+  font-weight: 750;
+}
+.today::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+.selected,
+.selected:hover:not(:disabled) {
+  color: #fff;
+  background: var(--color-primary);
+  box-shadow: 0 4px 10px rgba(76, 95, 222, 0.28);
+}
+.day:disabled {
+  color: #cdd3df;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+.todayButton {
+  padding: 6px 10px;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 650;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.todayButton:hover:not(:disabled) {
+  background: rgba(76, 95, 222, 0.08);
+}
+.todayButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

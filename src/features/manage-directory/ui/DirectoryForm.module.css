@@ -1,0 +1,24 @@
+.form {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: #f7f8fc;
+  border-radius: 12px;
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.fields > :last-child {
+  grid-column: 1 / -1;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.error {
+  color: var(--color-danger);
+  font-size: 13px;
+}

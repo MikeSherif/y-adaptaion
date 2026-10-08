@@ -1,9 +1,10 @@
-import { Bell, Menu, Search } from 'lucide-react';
+import { Bell, Menu } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useUserQuery } from '@/entities/user';
 import { useNotificationsQuery } from '@/entities/notification';
 import { Avatar, IconButton, Skeleton } from '@/shared/ui';
 import { useAppStore } from '@/shared/model/useAppStore';
+import { HeaderSearch } from './HeaderSearch';
 import styles from './AppHeader.module.css';
 export function AppHeader() {
   const { data: user } = useUserQuery();
@@ -15,10 +16,7 @@ export function AppHeader() {
       <IconButton className={styles.menu} aria-label="Открыть навигацию" onClick={toggleMenu}>
         <Menu size={20} />
       </IconButton>
-      <div className={styles.search}>
-        <Search size={18} />
-        <span>Поиск по материалам и задачам</span>
-      </div>
+      <HeaderSearch />
       <div className={styles.actions}>
         <Link
           to="/notifications"

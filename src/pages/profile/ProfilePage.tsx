@@ -7,7 +7,17 @@ import { useOnboardingQuery } from '@/entities/onboarding';
 import { profileSchema, type ProfileValues, useUpdateProfile } from '@/features/update-profile';
 import { Avatar, Button, Card, ErrorState, Input, Skeleton } from '@/shared/ui';
 import { formatDate } from '@/shared/lib/date';
+import { formatUserName } from '@/shared/lib/user';
+import type { User } from '@/shared/types/domain';
 import styles from '@/pages/page.module.css';
+
+const toProfileValues = (user: User): ProfileValues => ({
+  firstName: user.firstName,
+  lastName: user.lastName,
+  middleName: user.middleName ?? '',
+  phone: user.phone ?? '',
+});
+
 export function ProfilePage() {
   const { data: user, isLoading, isError, refetch } = useUserQuery();
   const { data: onboarding } = useOnboardingQuery();
@@ -20,13 +30,7 @@ export function ProfilePage() {
     formState: { errors },
   } = useForm<ProfileValues>({ resolver: zodResolver(profileSchema) });
   useEffect(() => {
-    if (user)
-      reset({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        middleName: user.middleName ?? '',
-        phone: user.phone ?? '',
-      });
+    if (user) reset(toProfileValues(user));
   }, [user, reset]);
   if (isLoading)
     return (
@@ -48,7 +52,13 @@ export function ProfilePage() {
           <h1>Профиль</h1>
           <p>Управляйте персональными и рабочими данными.</p>
         </div>
-        <Button variant="secondary" onClick={() => setEditing((value) => !value)}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            if (editing) reset(toProfileValues(user));
+            setEditing((value) => !value);
+          }}
+        >
           <Pencil size={16} />
           {editing ? 'Отменить' : 'Редактировать'}
         </Button>
@@ -113,11 +123,11 @@ export function ProfilePage() {
                 </div>
                 <div>
                   <span>Руководитель</span>
-                  <strong>
-                    {user.manager
-                      ? `${user.manager.firstName} ${user.manager.lastName}`
-                      : 'Не указан'}
-                  </strong>
+                  <strong>{user.manager ? formatUserName(user.manager) : 'Не указан'}</strong>
+                </div>
+                <div>
+                  <span>Наставник</span>
+                  <strong>{user.mentor ? formatUserName(user.mentor) : 'Не назначен'}</strong>
                 </div>
                 <div>
                   <span>Прогресс адаптации</span>

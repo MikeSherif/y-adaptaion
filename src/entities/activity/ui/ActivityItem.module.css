@@ -1,0 +1,34 @@
+.item {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 12px;
+}
+.icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+.copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  font-size: 13px;
+}
+.copy p {
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+.copy small {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+.copy a {
+  justify-self: start;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+}

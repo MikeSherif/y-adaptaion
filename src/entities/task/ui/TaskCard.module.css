@@ -67,3 +67,8 @@
   color: var(--color-text-secondary);
   font-size: 12px;
 }
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px 14px;
+}

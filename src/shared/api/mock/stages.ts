@@ -1,66 +1,36 @@
 import type { OnboardingStage, StageStatus } from '@/shared/types/domain';
+import { addDays } from '@/shared/lib/date';
+import { withResolvedStatus } from '@/shared/lib/task';
 import { tasks } from './tasks';
+import { findPlan } from './plan';
+import { findUser } from './users';
 
-type StageDefinition = Omit<OnboardingStage, 'tasks' | 'progress' | 'status'> & {
-  taskIds: string[];
-};
-export const stageDefinitions: StageDefinition[] = [
-  {
-    id: 'stage-1',
-    title: 'Первый день',
-    description: 'Доступы, профиль и знакомство с ближайшими коллегами.',
-    order: 1,
-    startDate: '2026-09-08',
-    dueDate: '2026-09-10',
-    taskIds: ['task-1', 'task-2', 'task-3'],
-  },
-  {
-    id: 'stage-2',
-    title: 'Погружение в компанию',
-    description: 'Базовые правила, культура и обязательные вводные материалы.',
-    order: 2,
-    startDate: '2026-09-11',
-    dueDate: '2026-09-14',
-    taskIds: ['task-4', 'task-5', 'task-6', 'task-7'],
-  },
-  {
-    id: 'stage-3',
-    title: 'Погружение в продукт',
-    description: 'Узнайте продукт, его пользователей и подход команды к дизайну.',
-    order: 3,
-    startDate: '2026-09-15',
-    dueDate: '2026-09-19',
-    taskIds: ['task-8', 'task-9', 'task-10', 'task-11'],
-  },
-  {
-    id: 'stage-4',
-    title: 'Первая практика',
-    description: 'Примените знания на реальных задачах вместе с наставником.',
-    order: 4,
-    startDate: '2026-09-22',
-    dueDate: '2026-09-29',
-    taskIds: ['task-12', 'task-13', 'task-14', 'task-15'],
-  },
-  {
-    id: 'stage-5',
-    title: 'Самостоятельность',
-    description: 'Закрепите процесс работы и договоритесь о целях на испытательный срок.',
-    order: 5,
-    startDate: '2026-10-01',
-    dueDate: '2026-10-09',
-    taskIds: ['task-16', 'task-17', 'task-18'],
-  },
-];
-export function getStages(): OnboardingStage[] {
-  const rawStages = stageDefinitions.map((stage) => {
-    const stageTasks = stage.taskIds
-      .map((id) => tasks.find((task) => task.id === id)!)
-      .map((task) => ({ ...task }));
-    const progress = Math.round(
-      (stageTasks.filter((task) => task.status === 'completed').length / stageTasks.length) * 100,
-    );
-    return { ...stage, tasks: stageTasks, progress };
+const byDueDate = (a: { dueDate?: string }, b: { dueDate?: string }) =>
+  (a.dueDate ?? '').localeCompare(b.dueDate ?? '');
+
+export function getStages(userId: string): OnboardingStage[] {
+  const user = findUser(userId);
+  if (!user) return [];
+  const template = findPlan(user);
+
+  const rawStages = template.stages.map((stage) => {
+    const stageTasks = tasks
+      .filter((task) => task.userId === userId && task.stageId === stage.id)
+      .map((task) => withResolvedStatus({ ...task }))
+      .sort(byDueDate);
+    const done = stageTasks.filter((task) => task.status === 'completed').length;
+    return {
+      id: stage.id,
+      title: stage.title,
+      description: stage.description,
+      order: stage.order,
+      startDate: addDays(user.startDate, stage.startOffset),
+      dueDate: addDays(user.startDate, stage.endOffset),
+      tasks: stageTasks,
+      progress: stageTasks.length === 0 ? 100 : Math.round((done / stageTasks.length) * 100),
+    };
   });
+
   let currentFound = false;
   return rawStages.map((stage) => {
     let status: StageStatus = 'locked';

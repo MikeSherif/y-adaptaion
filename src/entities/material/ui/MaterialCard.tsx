@@ -1,19 +1,8 @@
-import { BookOpen, ExternalLink, FileText, Presentation, Video } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import type { Material } from '@/shared/types/domain';
 import { Badge, Card } from '@/shared/ui';
+import { materialTypeIcons, materialTypeLabels } from '../lib';
 import styles from './MaterialCard.module.css';
-const typeIcons = {
-  document: FileText,
-  video: Video,
-  link: ExternalLink,
-  presentation: Presentation,
-};
-const typeLabels = {
-  document: 'Документ',
-  video: 'Видео',
-  link: 'Ссылка',
-  presentation: 'Презентация',
-};
 export function MaterialCard({
   material,
   onRead,
@@ -21,7 +10,7 @@ export function MaterialCard({
   material: Material;
   onRead?: (id: string) => void;
 }) {
-  const Icon = typeIcons[material.type];
+  const Icon = materialTypeIcons[material.type];
   return (
     <Card className={styles.card}>
       <a
@@ -36,7 +25,7 @@ export function MaterialCard({
         </div>
         <div className={styles.copy}>
           <div className={styles.top}>
-            <Badge tone="info">{typeLabels[material.type]}</Badge>
+            <Badge tone="info">{materialTypeLabels[material.type]}</Badge>
             {!material.isRead && <span className={styles.unread}>Новое</span>}
           </div>
           <h3>{material.title}</h3>

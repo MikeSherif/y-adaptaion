@@ -1,0 +1,1 @@
+export { AdminEmployeeNewPage } from './AdminEmployeeNewPage';
