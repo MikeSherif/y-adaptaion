@@ -1,5 +1,6 @@
 import { ArrowLeft, MoveRight } from 'lucide-react';
 import { Link, useParams } from '@tanstack/react-router';
+import { useMaterialReadStats } from '@/entities/material';
 import { useOnboardingQuery } from '@/entities/onboarding';
 import { TaskCard } from '@/entities/task';
 import { useEmployeesQuery, useUserByIdQuery } from '@/entities/user';
@@ -9,6 +10,8 @@ import {
   RescheduleTaskField,
 } from '@/features/manage-employee-task';
 import { EmployeeTeamForm } from '@/features/manage-employee-team';
+import { ArchiveEmployeeButton } from '@/features/archive-employee';
+import { DueRequestActions } from '@/features/resolve-due-request';
 import { EmployeeProfileForm } from '@/features/edit-employee-profile';
 import { RemindEmployeeButton } from '@/features/remind-employee';
 import type { Task } from '@/shared/types/domain';
@@ -46,6 +49,7 @@ function PlanTasksSection({
             interactive={false}
             actions={
               <div className={styles.taskPlanActions}>
+                <DueRequestActions task={task} />
                 <RescheduleTaskField taskId={task.id} dueDate={task.dueDate} />
                 <div className={styles.inlineActions}>
                   <Link
@@ -71,6 +75,7 @@ export function AdminEmployeePage() {
   const { data: user, isLoading, isError, refetch } = useUserByIdQuery(userId);
   const { data: onboarding } = useOnboardingQuery(userId);
   const { data: employees } = useEmployeesQuery();
+  const { data: reads } = useMaterialReadStats(userId);
   const summary = employees?.find((item) => item.user.id === userId);
   const allTasks = onboarding?.stages.flatMap((stage) => stage.tasks) ?? [];
   const overdueTasks = allTasks.filter((task) => task.status === 'overdue');
@@ -108,9 +113,16 @@ export function AdminEmployeePage() {
             {user.position}
             <br />
             В команде с {formatDate(user.startDate)}
+            {reads && (
+              <>
+                <br />
+                Прочитано {reads.read} из {reads.total}
+              </>
+            )}
           </p>
         </div>
         <div className={styles.employeeHeroActions}>
+          <ArchiveEmployeeButton userId={userId} archived={user.archived} />
           <RemindEmployeeButton
             userId={userId}
             overdueCount={overdueTasks.length}

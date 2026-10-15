@@ -5,6 +5,7 @@ import type {
   User,
   UserShort,
 } from '@/shared/types/domain';
+import { matchesArchiveFilter } from '@/shared/lib/options';
 
 export function formatUserName(user?: { firstName: string; lastName: string }): string {
   if (!user) return 'Не назначен';
@@ -17,6 +18,7 @@ export function filterEmployees(
 ): EmployeeSummary[] {
   const search = filters.search?.trim().toLowerCase();
   return list.filter(({ user, progress, overdueCount, openQuestions, currentStageTitle }) => {
+    if (!matchesArchiveFilter(user, filters.status ?? 'active')) return false;
     if (search) {
       const haystack = `${formatUserName(user)} ${user.position}`.toLowerCase();
       if (!haystack.includes(search)) return false;

@@ -5,6 +5,7 @@ import { useOnboardingQuery } from '@/entities/onboarding';
 import { TaskDetailsCard, TaskPriorityBadge, TaskStatusBadge, useTaskQuery } from '@/entities/task';
 import { useUserByIdQuery } from '@/entities/user';
 import { EditEmployeeTaskForm, RemoveEmployeeTaskButton } from '@/features/manage-employee-task';
+import { DueRequestActions } from '@/features/resolve-due-request';
 import { formatUserName } from '@/shared/lib/user';
 import { Card, ErrorState, Skeleton } from '@/shared/ui';
 import { TaskDiscussion } from '@/widgets/task-discussion';
@@ -16,7 +17,7 @@ export function AdminEmployeeTaskPage() {
   const { data: task, isLoading, isError, refetch } = useTaskQuery(taskId);
   const { data: user } = useUserByIdQuery(userId);
   const { data: onboarding } = useOnboardingQuery(userId);
-  const { data: related = [] } = useMaterialsByIds(task?.materialIds);
+  const { data: related = [] } = useMaterialsByIds(task?.materialIds, userId);
 
   if (isLoading)
     return (
@@ -28,7 +29,8 @@ export function AdminEmployeeTaskPage() {
   if (isError || !task || task.userId !== userId)
     return <ErrorState title="Задача не найдена" onRetry={() => void refetch()} />;
 
-  const stage = onboarding?.stages.find((item) => item.id === task.stageId);  const editable = task.status !== 'completed';
+  const stage = onboarding?.stages.find((item) => item.id === task.stageId);
+  const editable = task.status !== 'completed';
   const backToEmployee = () => void navigate({ to: '/admin/employees/$userId', params: { userId } });
 
   return (
@@ -53,7 +55,7 @@ export function AdminEmployeeTaskPage() {
           </Card>
           {editable ? (
             <Card className={styles.panel}>
-              <EditEmployeeTaskForm task={task} />
+              <EditEmployeeTaskForm task={task} stages={onboarding?.stages ?? []} />
             </Card>
           ) : (
             related.length > 0 && (
@@ -75,6 +77,12 @@ export function AdminEmployeeTaskPage() {
         </div>
         <div className={styles.page}>
           <TaskDetailsCard task={task} stageTitle={stage?.title} />
+          {editable && task.dueRequest && (
+            <Card className={styles.sideCard}>
+              <h3>Просьба о сроке</h3>
+              <DueRequestActions task={task} />
+            </Card>
+          )}
           {editable && (
             <Card className={styles.sideCard}>
               <h3>Снять задачу</h3>

@@ -3,6 +3,7 @@ import type {
   ActivityKind,
   CreateEmployeePayload,
   CreateTaskPayload,
+  DueDateRequestPayload,
   Department,
   EmployeeSummary,
   Material,
@@ -37,6 +38,7 @@ import { formatUserName } from '@/shared/lib/user';
 import { findUser, findUserByEmail, users } from './mock/users';
 import { getMockOnboarding } from './mock/onboarding';
 import { materials } from './mock/materials';
+import { hasRead, markRead } from './mock/reads';
 import { notifications } from './mock/notifications';
 import { tasks } from './mock/tasks';
 import { findTemplate, templates } from './mock/templates';
@@ -371,6 +373,20 @@ export async function updateEmployee(userId: string, payload: UpdateEmployeePayl
   return clone(user);
 }
 
+export async function setEmployeeArchived(userId: string, archived: boolean): Promise<User> {
+  await delay(320);
+  const user = requireEmployee(userId);
+  if (Boolean(user.archived) === archived) return clone(user);
+  user.archived = archived || undefined;
+  recordChange({
+    employeeId: userId,
+    kind: 'employee_archived',
+    title: archived ? 'Сотрудник в архиве' : 'Сотрудник возвращён',
+    description: formatUserName(user),
+  });
+  return clone(user);
+}
+
 export async function getTemplates(): Promise<OnboardingTemplate[]> {
   await delay();
   requireAdmin();
@@ -600,6 +616,7 @@ export async function completeTask(taskId: string): Promise<Task> {
   if (!task) throw new Error('Задача не найдена');
   if (task.userId !== session.userId) throw new Error('Недостаточно прав');
   task.status = 'completed';
+  task.dueRequest = undefined;
   task.completedAt = new Date().toISOString();
   return clone(withResolvedStatus(task));
 }
@@ -643,6 +660,7 @@ const FIELD_LABELS: Record<keyof UpdateTaskPayload, string> = {
   priority: 'приоритет',
   dueDate: 'срок',
   materialIds: 'материалы',
+  stageId: 'этап',
 };
 
 function normalizePatch(patch: UpdateTaskPayload): UpdateTaskPayload {
@@ -659,28 +677,111 @@ export async function updateTask(taskId: string, patch: UpdateTaskPayload): Prom
   await delay(420);
   const task = requireEditableTask(taskId);
   const next = normalizePatch(patch);
+  if (next.stageId) {
+    const stage = getMockOnboarding(task.userId).stages.find((item) => item.id === next.stageId);
+    if (!stage) throw new Error('Этап адаптации не найден');
+  }
   const changed = (Object.keys(next) as (keyof UpdateTaskPayload)[]).filter(
     (key) => !sameValue(task[key], next[key]),
   );
   if (changed.length === 0) return clone(withResolvedStatus(task));
   Object.assign(task, next);
-  const onlyDate = changed.length === 1 && changed[0] === 'dueDate';
-  const fields = changed.map((key) => FIELD_LABELS[key]).join(', ');
+  if (changed.includes('dueDate')) task.dueRequest = undefined;
+  const stageChanged = changed.includes('stageId');
+  const onlyDate = !stageChanged && changed.length === 1 && changed[0] === 'dueDate';
+  const stageTitle = getMockOnboarding(task.userId).stages.find((item) => item.id === task.stageId)?.title;
+  const otherFields = changed
+    .filter((key) => key !== 'stageId')
+    .map((key) => FIELD_LABELS[key])
+    .join(', ');
+  const title = stageChanged ? 'Задача перенесена' : onlyDate ? 'Сдвинут срок' : 'Задача изменена';
+  const description = stageChanged
+    ? `${task.title} · этап «${stageTitle ?? 'этап'}»${otherFields ? ` · ${otherFields}` : ''}`
+    : onlyDate
+      ? `${task.title} · до ${formatDate(task.dueDate)}`
+      : `${task.title} · ${otherFields}`;
   recordChange({
     employeeId: task.userId,
     kind: 'task_updated',
-    title: onlyDate ? 'Сдвинут срок' : 'Задача изменена',
-    description: onlyDate
-      ? `${task.title} · до ${formatDate(task.dueDate)}`
-      : `${task.title} · ${fields}`,
+    title,
+    description,
     taskId: task.id,
     notify: {
       userIds: [task.userId],
-      title: onlyDate ? 'Срок задачи обновлён' : 'Задача обновлена',
-      description: onlyDate ? task.title : `${task.title}: изменены ${fields}`,
+      title: stageChanged ? 'Задача перенесена' : onlyDate ? 'Срок задачи обновлён' : 'Задача обновлена',
+      description: stageChanged ? `${task.title}: этап «${stageTitle ?? 'этап'}»` : onlyDate ? task.title : `${task.title}: изменены ${otherFields}`,
       link: `/tasks/${task.id}`,
     },
   });
+  return clone(withResolvedStatus(task));
+}
+
+export async function requestDueDate(taskId: string, payload: DueDateRequestPayload): Promise<Task> {
+  await delay(420);
+  const session = requireSession();
+  const task = tasks.find((item) => item.id === taskId);
+  if (!task) throw new Error('Задача не найдена');
+  if (session.role !== 'employee' || task.userId !== session.userId) throw new Error('Недостаточно прав');
+  if (task.status === 'completed') throw new Error('Выполненную задачу менять нельзя');
+  const comment = payload.comment.trim();
+  if (comment.length < 3) throw new Error('Опишите причину — минимум 3 символа');
+  if (!payload.dueDate) throw new Error('Укажите срок');
+  task.dueRequest = { dueDate: payload.dueDate, comment, createdAt: new Date().toISOString() };
+  recordChange({
+    employeeId: task.userId,
+    kind: 'due_requested',
+    title: 'Просьба сдвинуть срок',
+    description: `${task.title} · до ${formatDate(payload.dueDate)} · ${comment}`,
+    taskId: task.id,
+    notify: {
+      userIds: adminIds(),
+      title: 'Просьба сдвинуть срок',
+      description: `${formatUserName(findUser(task.userId))}: ${task.title}`,
+      link: `/admin/employees/${task.userId}/tasks/${task.id}`,
+    },
+  });
+  return clone(withResolvedStatus(task));
+}
+
+export async function resolveDueDateRequest(
+  taskId: string,
+  decision: 'approved' | 'rejected',
+): Promise<Task> {
+  await delay(420);
+  const task = requireEditableTask(taskId);
+  const request = task.dueRequest;
+  if (!request) throw new Error('Просьбы нет');
+  task.dueRequest = undefined;
+  if (decision === 'approved') {
+    task.dueDate = request.dueDate;
+    recordChange({
+      employeeId: task.userId,
+      kind: 'task_updated',
+      title: 'Сдвинут срок',
+      description: `${task.title} · до ${formatDate(task.dueDate)}`,
+      taskId: task.id,
+      notify: {
+        userIds: [task.userId],
+        title: 'Срок задачи обновлён',
+        description: task.title,
+        link: `/tasks/${task.id}`,
+      },
+    });
+  } else {
+    recordChange({
+      employeeId: task.userId,
+      kind: 'due_requested',
+      title: 'Просьба отклонена',
+      description: task.title,
+      taskId: task.id,
+      notify: {
+        userIds: [task.userId],
+        title: 'Просьба о сроке отклонена',
+        description: task.title,
+        link: `/tasks/${task.id}`,
+      },
+    });
+  }
   return clone(withResolvedStatus(task));
 }
 
@@ -758,11 +859,25 @@ export async function getEmployeeActivity(userId: string): Promise<ActivityEntry
   return clone(activity.filter((item) => item.employeeId === userId).sort(newestFirst));
 }
 
+function readViewer(explicit?: string): string | undefined {
+  const session = getCurrentSession();
+  if (!session) return undefined;
+  if (session.role === 'employee') return session.userId;
+  return explicit;
+}
+
+function presentMaterial(material: Material, viewerId?: string): Material {
+  return { ...material, isRead: viewerId ? hasRead(viewerId, material.id) : false };
+}
+
 export async function getMaterials(filters: MaterialFilters = {}): Promise<Material[]> {
   await delay();
+  const viewerId = readViewer(filters.userId);
   if (filters.ids) {
     const ids = filters.ids;
-    return clone(materials.filter((material) => ids.includes(material.id)));
+    return clone(
+      materials.filter((material) => ids.includes(material.id)).map((material) => presentMaterial(material, viewerId)),
+    );
   }
   let result = filters.includeArchived ? [...materials] : materials.filter((item) => !item.archived);
   if (filters.type) result = result.filter((material) => material.type === filters.type);
@@ -774,22 +889,34 @@ export async function getMaterials(filters: MaterialFilters = {}): Promise<Mater
       `${material.title} ${material.description ?? ''}`.toLowerCase().includes(search),
     );
   }
-  return clone(result);
+  return clone(result.map((material) => presentMaterial(material, viewerId)));
 }
 
 export async function getMaterial(materialId: string): Promise<Material> {
   await delay();
   const material = materials.find((item) => item.id === materialId);
   if (!material) throw new Error('Материал не найден');
-  return clone(material);
+  return clone(presentMaterial(material, readViewer()));
+}
+
+export async function getMaterialReadStats(userId: string): Promise<{ read: number; total: number }> {
+  await delay(200);
+  requireEmployee(userId);
+  const active = materials.filter((material) => !material.archived);
+  return {
+    total: active.length,
+    read: active.filter((material) => hasRead(userId, material.id)).length,
+  };
 }
 
 export async function markMaterialAsRead(materialId: string): Promise<Material> {
   await delay(280);
+  const session = requireSession();
+  if (session.role !== 'employee') throw new Error('Недостаточно прав');
   const material = materials.find((item) => item.id === materialId);
   if (!material) throw new Error('Материал не найден');
-  material.isRead = true;
-  return clone(material);
+  markRead(session.userId, materialId);
+  return clone(presentMaterial(material, session.userId));
 }
 
 function requireMaterial(materialId: string) {

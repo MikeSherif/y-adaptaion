@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import {
+  Archive,
   BellRing,
   CalendarClock,
+  CalendarPlus,
   IdCard,
   ListPlus,
   ListX,
@@ -23,6 +25,8 @@ const kindIcons: Record<ActivityKind, LucideIcon> = {
   team_changed: UsersRound,
   profile_changed: IdCard,
   comment: MessageCircle,
+  employee_archived: Archive,
+  due_requested: CalendarPlus,
 };
 
 export function ActivityItem({ entry, action }: { entry: ActivityEntry; action?: ReactNode }) {

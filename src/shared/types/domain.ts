@@ -14,7 +14,9 @@ export type ActivityKind =
   | 'reminder'
   | 'team_changed'
   | 'profile_changed'
-  | 'comment';
+  | 'comment'
+  | 'employee_archived'
+  | 'due_requested';
 export type StaffKind = 'manager' | 'mentor';
 
 export interface Department {
@@ -39,6 +41,7 @@ export interface User extends UserShort {
   manager?: UserShort;
   mentor?: UserShort;
   templateId?: string;
+  archived?: boolean;
 }
 export interface EmployeeSummary {
   user: User;
@@ -47,6 +50,11 @@ export interface EmployeeSummary {
   overdueCount: number;
   openQuestions: number;
   lastRemindedAt?: string;
+}
+export interface DueDateRequest {
+  dueDate: string;
+  comment: string;
+  createdAt: string;
 }
 export interface Task {
   id: string;
@@ -61,6 +69,7 @@ export interface Task {
   assigneeRole?: AssigneeRole;
   stageId?: string;
   materialIds?: string[];
+  dueRequest?: DueDateRequest;
 }
 export interface TemplateTask {
   id: string;
@@ -169,12 +178,14 @@ export interface MaterialFilters {
   search?: string;
   ids?: string[];
   includeArchived?: boolean;
+  userId?: string;
 }
 export interface EmployeeFilters {
   search?: string;
   departmentId?: string;
   risk?: 'overdue' | 'on_track' | 'completed' | 'questions';
   stage?: string;
+  status?: 'active' | 'archived';
 }
 export interface UpdateProfilePayload {
   firstName: string;
@@ -192,8 +203,12 @@ export interface CreateTaskPayload {
   materialIds?: string[];
 }
 export type UpdateTaskPayload = Partial<
-  Pick<Task, 'title' | 'description' | 'priority' | 'dueDate' | 'materialIds'>
+  Pick<Task, 'title' | 'description' | 'priority' | 'dueDate' | 'materialIds' | 'stageId'>
 >;
+export interface DueDateRequestPayload {
+  dueDate: string;
+  comment: string;
+}
 export interface CreateEmployeePayload {
   firstName: string;
   lastName: string;

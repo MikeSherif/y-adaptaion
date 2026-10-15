@@ -4,6 +4,7 @@ import { useTaskQuery, TaskDetailsCard, TaskPriorityBadge, TaskStatusBadge } fro
 import { useOnboardingQuery } from '@/entities/onboarding';
 import { useMaterialsByIds, MaterialCard } from '@/entities/material';
 import { CompleteTaskButton } from '@/features/complete-task';
+import { RequestDueDateForm } from '@/features/request-due-date';
 import { useMarkMaterialAsRead } from '@/features/mark-material-as-read';
 import { Card, ErrorState, Skeleton } from '@/shared/ui';
 import { TaskDiscussion } from '@/widgets/task-discussion';
@@ -23,7 +24,8 @@ export function TaskDetailPage() {
     );
   if (isError || !task)
     return <ErrorState title="Не удалось открыть задачу" onRetry={() => void refetch()} />;
-  const stage = onboarding?.stages.find((item) => item.id === task.stageId);  return (
+  const stage = onboarding?.stages.find((item) => item.id === task.stageId);
+  return (
     <div className={styles.page}>
       <div className={styles.breadcrumbs}>
         <Link to="/tasks">
@@ -69,7 +71,10 @@ export function TaskDetailPage() {
             emptyText="Что-то непонятно? Задайте вопрос — HR ответит здесь же."
           />
         </div>
-        <TaskDetailsCard task={task} stageTitle={stage?.title} />
+        <div className={styles.page}>
+          <TaskDetailsCard task={task} stageTitle={stage?.title} />
+          <RequestDueDateForm task={task} />
+        </div>
       </div>
     </div>
   );

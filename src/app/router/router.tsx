@@ -98,11 +98,13 @@ const notificationsRoute = createRoute({
   ...protectedRoute(NotificationsPage),
   path: '/notifications',
 });
+const archiveStatusSchema = z.enum(['active', 'archived']).optional();
 const employeeSearchSchema = z.object({
   search: z.string().optional(),
   departmentId: z.string().optional(),
   risk: z.enum(['overdue', 'on_track', 'completed', 'questions']).optional(),
   stage: z.string().optional(),
+  status: archiveStatusSchema,
 });
 const adminEmployeesRoute = createRoute({
   ...adminRoute(AdminEmployeesPage),
@@ -121,7 +123,6 @@ const adminEmployeeTaskRoute = createRoute({
   ...adminRoute(AdminEmployeeTaskPage),
   path: '/admin/employees/$userId/tasks/$taskId',
 });
-const archiveStatusSchema = z.enum(['active', 'archived']).optional();
 const adminTemplatesRoute = createRoute({
   ...adminRoute(AdminTemplatesPage),
   path: '/admin/templates',

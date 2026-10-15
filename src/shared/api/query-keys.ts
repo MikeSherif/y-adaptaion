@@ -23,6 +23,7 @@ export const materialKeys = {
   all: ['materials'] as const,
   list: (filters: MaterialFilters = {}) => [...materialKeys.all, 'list', filters] as const,
   detail: (id: string) => [...materialKeys.all, 'detail', id] as const,
+  stats: (userId: string) => [...materialKeys.all, 'stats', userId] as const,
 };
 export const notificationKeys = {
   all: ['notifications'] as const,

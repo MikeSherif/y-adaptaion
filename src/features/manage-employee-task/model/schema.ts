@@ -12,5 +12,10 @@ export const createEmployeeTaskSchema = taskFieldsSchema.extend({
   stageId: z.string().min(1, 'Выберите этап'),
 });
 
+export const editEmployeeTaskSchema = taskFieldsSchema.extend({
+  stageId: z.string().min(1, 'Выберите этап'),
+});
+
 export type TaskFieldsValues = z.infer<typeof taskFieldsSchema>;
 export type CreateEmployeeTaskValues = z.infer<typeof createEmployeeTaskSchema>;
+export type EditEmployeeTaskValues = z.infer<typeof editEmployeeTaskSchema>;

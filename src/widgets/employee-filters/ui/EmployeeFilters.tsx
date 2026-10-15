@@ -1,4 +1,5 @@
 import type { EmployeeFilters, EmployeeSummary } from '@/shared/types/domain';
+import { archiveFilterOptions, matchesArchiveFilter } from '@/shared/lib/options';
 import { Card, Input, Select } from '@/shared/ui';
 import styles from '@/pages/page.module.css';
 
@@ -19,10 +20,13 @@ export function EmployeeFilters({
   employees: EmployeeSummary[];
   onChange: (value: Partial<EmployeeFilters>) => void;
 }) {
+  const listed = employees.filter((item) =>
+    matchesArchiveFilter(item.user, filters.status ?? 'active'),
+  );
   const departments = [
     { value: '', label: 'Все отделы' },
     ...unique(
-      employees.map((item) => ({
+      listed.map((item) => ({
         value: item.user.department.id,
         label: item.user.department.name,
       })),
@@ -31,7 +35,7 @@ export function EmployeeFilters({
   const stages = [
     { value: '', label: 'Все этапы' },
     ...unique(
-      employees
+      listed
         .map((item) => item.currentStageTitle)
         .filter((title): title is string => Boolean(title))
         .map((title) => ({ value: title, label: title })),
@@ -65,6 +69,12 @@ export function EmployeeFilters({
         value={filters.stage ?? ''}
         options={stages}
         onChange={(stage) => onChange({ stage: stage || undefined })}
+      />
+      <Select
+        aria-label="Статус"
+        value={filters.status ?? 'active'}
+        options={archiveFilterOptions}
+        onChange={(status) => onChange({ status: status === 'active' ? undefined : 'archived' })}
       />
     </Card>
   );

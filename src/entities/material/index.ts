@@ -1,5 +1,6 @@
 export {
   useMaterialQuery,
+  useMaterialReadStats,
   useMaterialsByIds,
   useMaterialsQuery,
 } from './model/useMaterialQueries';

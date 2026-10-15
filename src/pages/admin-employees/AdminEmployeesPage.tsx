@@ -27,7 +27,7 @@ export function AdminEmployeesPage() {
     );
   if (isError || !data) return <ErrorState onRetry={() => void refetch()} />;
 
-  const stats = summarizeEmployees(data);
+  const stats = summarizeEmployees(data.filter((item) => !item.user.archived));
   const visible = filterEmployees(data, filters);
 
   return (
